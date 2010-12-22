@@ -1,0 +1,23 @@
+Build and Package Instructions
+------------------------------
+1. Assuming you have the necessary environment, building this SBSettings Toggle is just a simple 'make' on the command line
+
+2. The output file, 'Toggle.dylib' should be copied to the relative path before packaging
+		package/com.se4c0met.resetsafari/var/mobile/Library/SBSettings/Toggles/ResetSafari
+		
+3. To build the debian package, you run 'dpkg -b com.se4c0met.resetsafari' (for details, refer to http://www.saurik.com/id/7)
+
+4. Note that in my environment, I sudo the above commands as root
+
+
+
+The iPhone Development Environment
+----------------------------------
+This is what I build my environment from:
+1. Apple's iPhone4 SDK bundled with XCode 3.2.5 (remember to install the OSX 10.4 Universal SDK)
+2. iPhone-dev ToolChain (http://code.google.com/p/iphone-dev/) (i just needed to run install-headers.sh to build the include files)
+3. iPhone OS 3.0 frameworks extracted from the firmware of a first-generation iPhone running OS 3.0
+4. My computer hardware is a MacBook Air running OS X 10.6.5
+
+Note that I took the trouble to build with the iOS 3.0 frameworks for maximum compatibility. You should try to do the same if possible.
+
