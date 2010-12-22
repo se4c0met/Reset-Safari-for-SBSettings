@@ -1,0 +1,12 @@
+Package: com.se4c0met.resetsafari
+Version: 1.0
+Architecture: iphoneos-arm
+Depends: sbsettings, mobilesubstrate 
+Author: se4c0met@gmail.com
+Maintainer: se4c0met
+Icon: file:///var/mobile/Library/SBSettings/Themes/Default/ResetSafari/on.png
+Section: SBSettings Addons
+Name: ResetSafari
+Description:	A quick way to reset MobileSafari.
+  MobileSafari will first be terminated before its cache, history and tabs get removed. Also attempt to remove Ever-Cookies using the approach suggested by Dominic White (see <a href="http://tinyurl.com/22urh6h">http://tinyurl.com/22urh6h</a>). 
+	

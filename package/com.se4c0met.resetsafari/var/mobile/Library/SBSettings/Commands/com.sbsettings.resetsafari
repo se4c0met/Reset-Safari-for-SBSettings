@@ -1,0 +1,35 @@
+#!/bin/sh
+OUTFILE=/tmp/resetsafari.log
+
+echo "Killing MobileSafari" > $OUTFILE
+killall MobileSafari 2>> $OUTFILE
+
+#kill evercookie
+for DIRNAME in $(find /var/mobile/Applications -maxdepth 3 -type d -print|grep WebKit); do
+        #Delete HTML5 SQLite DB
+				echo "Deleting the following HTML5 SQLIte DB of the following WebKit-based app" >> $OUTFILE
+        ls "$DIRNAME"/Databases/* >> $OUTFILE
+        rm -rf "$DIRNAME"/Databases/*
+				echo >> $OUTFILE
+        ls /var/mobile/Library/WebKit/Databases/* >> $OUTFILE
+        rm -rf /var/mobile/Library/WebKit/Databases/*
+        #Delete HTML5 local storage
+        echo "Deleting the following HTML5 local storage of the following WebKit-based app" >> $OUTFILE
+        ls "$DIRNAME"/LocalStorage/* >> $OUTFILE
+        rm -rf "$DIRNAME"/LocalStorage/*
+        rm -rf /var/mobile/Library/WebKit/LocalStorage/*
+        #Delete normal cookies
+        echo "Deleting normal cookies of the following WebKit-based app" >> $OUTFILE
+        ls "$DIRNAME"/Cookies/* >> $OUTFILE
+        rm -rf "$DIRNAME"/Cookies/*
+        rm -rf /var/mobile/Library/WebKit/Cookies/*
+done
+
+echo "Clearing MobileSafari cache" >> $OUTFILE
+rm -rf /private/var/mobile/Library/Caches/Safari/*
+
+echo "Clearing history" >> $OUTFILE
+rm -rf /private/var/mobile/Library/Safari/History.plist 
+
+echo "Clearing tabs" >> $OUTFILE
+rm -rf /private/var/mobile/Library/Safari/SuspendState.plist 
