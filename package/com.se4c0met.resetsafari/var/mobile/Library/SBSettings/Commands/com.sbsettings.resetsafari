@@ -1,35 +1,59 @@
 #!/bin/sh
 OUTFILE=/tmp/resetsafari.log
 
-echo "Killing MobileSafari" > $OUTFILE
+#echo "Killing MobileSafari" > $OUTFILE
 killall MobileSafari 2>> $OUTFILE
 
-#kill evercookie
-for DIRNAME in $(find /var/mobile/Applications -maxdepth 3 -type d -print|grep WebKit); do
-        #Delete HTML5 SQLite DB
-				echo "Deleting the following HTML5 SQLIte DB of the following WebKit-based app" >> $OUTFILE
-        ls "$DIRNAME"/Databases/* >> $OUTFILE
-        rm -rf "$DIRNAME"/Databases/*
-				echo >> $OUTFILE
-        ls /var/mobile/Library/WebKit/Databases/* >> $OUTFILE
-        rm -rf /var/mobile/Library/WebKit/Databases/*
-        #Delete HTML5 local storage
-        echo "Deleting the following HTML5 local storage of the following WebKit-based app" >> $OUTFILE
-        ls "$DIRNAME"/LocalStorage/* >> $OUTFILE
-        rm -rf "$DIRNAME"/LocalStorage/*
-        rm -rf /var/mobile/Library/WebKit/LocalStorage/*
-        #Delete normal cookies
-        echo "Deleting normal cookies of the following WebKit-based app" >> $OUTFILE
-        ls "$DIRNAME"/Cookies/* >> $OUTFILE
-        rm -rf "$DIRNAME"/Cookies/*
-        rm -rf /var/mobile/Library/WebKit/Cookies/*
-done
+for f in `cat /tmp/resetsafari.param `; do 
+	if [ $f == "RemoveCache" ];  then 
+		echo "Clearing MobileSafari cache" >> $OUTFILE
+		rm -rf /private/var/mobile/Library/Caches/Safari/*
 
-echo "Clearing MobileSafari cache" >> $OUTFILE
-rm -rf /private/var/mobile/Library/Caches/Safari/*
+	elif [ $f == "RemoveHistory" ];  then 
+		echo "Clearing MobileSafari history" >> $OUTFILE
+		rm -rf /private/var/mobile/Library/Safari/History.plist
 
-echo "Clearing history" >> $OUTFILE
-rm -rf /private/var/mobile/Library/Safari/History.plist 
+	elif [ $f == "RemoveTabs" ];  then 
+		echo "Clearing MobileSafari tabs" >> $OUTFILE
+		rm -rf /private/var/mobile/Library/Safari/SuspendState.plist
 
-echo "Clearing tabs" >> $OUTFILE
-rm -rf /private/var/mobile/Library/Safari/SuspendState.plist 
+	elif [ $f == "KillEverCookies" ];  then 
+		echo "Killing ever cookies" >> $OUTFILE
+		
+		#kill evercookie
+		for DIRNAME in $(find /var/mobile/Applications -maxdepth 3 -type d -print|grep WebKit); do
+       cd $DIRNAME/../../
+			 APPNAME=$(ls -d *\.app)
+			 echo "Application: $APPNAME" >> $OUTFILE
+       cd $DIRNAME
+			 if [ `pwd` == $DIRNAME ]; then
+	       echo "  Current dealing with $DIRNAME" >> $OUTFILE
+	       #Delete HTML5 SQLite DB
+	       echo "  Deleting the following HTML5 SQLIte DB of $APPNAME" >> $OUTFILE
+	       ls Databases/* >> $OUTFILE
+	       rm -rf Databases/*
+	       #Delete HTML5 local storage
+	       echo "  Deleting the following HTML5 local storage of $APPNAME" >> $OUTFILE
+	       ls LocalStorage/* >> $OUTFILE
+	       rm -rf LocalStorage/*
+	       #Delete normal cookies
+	       echo "  Deleting normal cookies of $APPNAME" >> $OUTFILE
+	       cd ..
+	       ls Cookies/* >> $OUTFILE
+	       rm -rf Cookies/*
+	     else
+				 echo "Unable to change directory to $DIRNAME" >> $OUTFILE
+			 fi;
+		done
+
+		echo "Clearing MobileSafari locations" >> $OUTFILE
+		ls /var/mobile/Library/WebKit/LocalStorage/* >> $OUTFILE
+		rm -rf /var/mobile/Library/WebKit/LocalStorage/*
+		ls /var/mobile/Library/WebKit/Databases/* >> $OUTFILE
+		rm -rf /var/mobile/Library/WebKit/Databases/*
+		ls /var/mobile/Library/Cookies/* >> $OUTFILE
+		rm -rf /var/mobile/Library/Cookies/*
+	fi;  
+done; 
+
+
