@@ -53,6 +53,13 @@ for f in `cat /tmp/resetsafari.param `; do
 		rm -rf /var/mobile/Library/WebKit/Databases/*
 		ls /var/mobile/Library/Cookies/* >> $OUTFILE
 		rm -rf /var/mobile/Library/Cookies/*
+	elif [ $f == "HandleWebClips" ]; then
+		echo "Handle WebClips" >> $OUTFILE
+
+		for DIRNAME in $(find /var/mobile/Library/WebClips -maxdepth 2 -type d -name Storage -print) ; do
+			echo "Deleting webclip storage $DIRNAME" >> $OUTFILE
+			rm -fr "$DIRNAME/*"
+		done
 	fi;  
 done; 
 
